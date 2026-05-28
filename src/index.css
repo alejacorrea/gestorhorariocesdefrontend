@@ -1,0 +1,296 @@
+/* Google Fonts - Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+/* Bootstrap Icons */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================
+   BASE RESET
+======================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  color: #11182B;
+  background-color: #EBEBEB;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ========================
+   COMPONENTES REUTILIZABLES
+======================== */
+@layer components {
+  /* Botón primario CESDE */
+  .btn-primary {
+    @apply bg-primary text-white font-bold py-2.5 px-5 rounded-md
+           cursor-pointer border-none transition-all duration-300
+           hover:bg-primary-dark active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  /* Botón secundario */
+  .btn-secondary {
+    @apply bg-cesde-gray text-cesde-dark font-semibold py-2.5 px-5 rounded-md
+           cursor-pointer border-none transition-all duration-300 hover:bg-gray-300;
+  }
+
+  /* Botón peligro */
+  .btn-danger {
+    @apply bg-red-500 text-white font-bold py-2.5 px-5 rounded-md
+           cursor-pointer border-none transition-all duration-300 hover:bg-red-600;
+  }
+
+  /* Input estilo CESDE */
+  .input-cesde {
+    @apply w-full px-3 py-2 mt-1 border border-gray-300 rounded-md
+           font-montserrat text-sm focus:outline-none focus:border-primary
+           focus:ring-2 focus:ring-primary/20 transition-all duration-200;
+  }
+
+  /* Input con franja rosa izquierda */
+  .input-cesde-pink {
+    @apply w-full px-3 py-2 mt-1 border border-gray-300 border-l-4 border-l-primary
+           rounded-md font-montserrat text-sm focus:outline-none
+           focus:ring-2 focus:ring-primary/20 transition-all duration-200;
+  }
+
+  /* Card base */
+  .card {
+    @apply bg-white rounded-lg shadow-sm p-4;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center
+           animate-fade-in;
+  }
+
+  /* Modal contenido */
+  .modal-box {
+    @apply bg-white rounded-xl shadow-xl p-6 w-[320px] max-w-[90vw]
+           animate-scale-in relative;
+  }
+
+  /* Header CESDE */
+  .header-cesde {
+    @apply bg-primary text-white flex items-center justify-between
+           px-5 py-2.5 shadow-md;
+  }
+
+  /* Item de lista profesor */
+  .prof-item {
+    @apply bg-white px-3 py-2 rounded-md flex items-center justify-between
+           font-medium text-sm shadow-sm;
+  }
+
+  /* Badge notificación */
+  .badge-notif {
+    @apply absolute -top-1 -right-1 bg-red-500 text-white text-xs
+           rounded-full w-5 h-5 flex items-center justify-center font-bold;
+  }
+
+  /* Celda calendario activa */
+  .cal-celda-activa {
+    @apply bg-primary text-white font-bold;
+  }
+
+  /* Evento en calendario */
+  .cal-evento {
+    @apply block mt-1 bg-primary text-white px-1.5 py-0.5 rounded text-xs
+           text-center no-underline hover:bg-primary-dark transition-colors;
+  }
+
+  /* Día de la semana header calendario */
+  .cal-dia-header {
+    @apply bg-gray-100 border border-gray-200 text-center py-2.5 rounded font-semibold text-sm;
+  }
+
+  /* Celda calendario */
+  .cal-celda {
+    @apply bg-gray-50 border border-gray-200 text-center p-2.5 rounded text-sm
+           cursor-pointer hover:bg-primary/10 transition-colors min-h-[50px];
+  }
+
+  /* ── Tooltip de evento en calendario ── */
+  .evento-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: 220px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(232, 0, 99, 0.18), 0 2px 8px rgba(0,0,0,0.10);
+    border: 1px solid #f9c6d8;
+    overflow: hidden;
+    animation: tooltip-in 0.15s ease;
+  }
+
+  .evento-tooltip-arrow {
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 7px;
+    background: white;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    border-left: 1px solid #f9c6d8;
+    border-right: 1px solid #f9c6d8;
+  }
+
+  .evento-tooltip-header {
+    @apply flex items-center gap-2 px-3 py-2 text-white text-xs font-semibold;
+    background: linear-gradient(90deg, #e80063 0%, #ff4d8d 100%);
+  }
+
+  .evento-tooltip-body {
+    @apply flex flex-col gap-1.5 px-3 py-2.5;
+  }
+
+  .evento-tooltip-row {
+    @apply flex items-center gap-2 text-xs text-gray-700;
+  }
+
+  @keyframes tooltip-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* ── Dropdown de notificaciones ── */
+  .notif-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    width: 300px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(232,0,99,0.08);
+    border: 1px solid #f0f0f0;
+    z-index: 50;
+    overflow: hidden;
+    animation: fade-scale-in 0.18s ease;
+  }
+
+  .notif-header {
+    @apply flex items-center justify-between px-4 py-3 border-b border-primary;
+    background: #E91E75 !important;
+  }
+
+  .notif-lista {
+    @apply flex flex-col;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .notif-item {
+    @apply flex items-start gap-2 px-4 py-3 border-b border-gray-50 transition-colors;
+  }
+
+  .notif-item-nueva {
+    @apply bg-pink-50/60 hover:bg-pink-50;
+  }
+
+  .notif-item-vista {
+    @apply bg-white hover:bg-gray-50 opacity-60;
+  }
+
+  .notif-punto {
+    @apply flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-1.5;
+  }
+
+  @keyframes fade-scale-in {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
+/* ========================
+   MODO OSCURO (DARK MODE)
+======================== */
+html.dark body {
+  background-color: #1f2937; /* bg-gray-800 */
+  color: #f9fafb; /* text-gray-50 */
+}
+
+html.dark .bg-white {
+  background-color: #374151 !important; /* bg-gray-700 */
+  color: #f9fafb !important;
+}
+
+html.dark .text-cesde-dark {
+  color: #f3f4f6 !important; /* text-gray-100 */
+}
+
+html.dark .bg-cesde-gray {
+  background-color: #4b5563 !important; /* bg-gray-600 */
+}
+
+html.dark .text-gray-500, html.dark .text-gray-400 {
+  color: #d1d5db !important; /* text-gray-300 */
+}
+
+html.dark .bg-gray-50, html.dark .bg-gray-100 {
+  background-color: #1f2937 !important; /* bg-gray-800 */
+  color: #f9fafb !important;
+}
+
+html.dark .border-gray-50, html.dark .border-gray-100, html.dark .border-gray-200, html.dark .border-gray-300 {
+  border-color: #4b5563 !important; /* border-gray-600 */
+}
+
+html.dark .input-cesde, html.dark .input-cesde-pink {
+  background-color: #4b5563 !important;
+  color: white !important;
+}
+
+/* Mantener un header bien oscuro */
+html.dark .header-cesde {
+  background-color: #111827 !important; /* bg-gray-900 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+/* Elementos superpuestos: Tooltips y dropdowns */
+html.dark .evento-tooltip, html.dark .notif-dropdown, html.dark .modal-box {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+html.dark .evento-tooltip-arrow {
+  background-color: #374151 !important;
+}
+
+html.dark .notif-header {
+  background: #1f2937 !important;
+  border-bottom-color: #4b5563 !important;
+}
+
+html.dark .notif-item-nueva {
+  background-color: rgba(233, 30, 117, 0.2) !important;
+}
+
+/* Calendario en modo oscuro */
+html.dark .cal-celda {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+html.dark .cal-celda:hover {
+  background-color: #4b5563 !important;
+}
+
+html.dark .cal-dia-header {
+  background-color: #1f2937 !important;
+  border-color: #4b5563 !important;
+  color: #f3f4f6 !important;
+}
