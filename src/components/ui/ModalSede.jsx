@@ -52,7 +52,7 @@ const ModalSede = ({ abierto, onCerrar, onSedeCreada }) => {
       const nombreLimpio = form.nombresede.trim().toLowerCase();
       const existe = sedes.find(s => 
         s.nombresede.toLowerCase() === nombreLimpio && 
-        (!modoEdicion || s.idsede !== form.idsede)
+        (!modoEdicion || String(s.idsede) !== String(form.idsede))
       );
       if (existe) {
         nuevosErrores.nombresede = 'Esta sede ya está registrada';
@@ -69,6 +69,7 @@ const ModalSede = ({ abierto, onCerrar, onSedeCreada }) => {
     setCargando(true);
     try {
       const dataAEnviar = {
+        idsede: modoEdicion ? form.idsede : null,
         nombresede: form.nombresede.trim(),
         activo: true
       };

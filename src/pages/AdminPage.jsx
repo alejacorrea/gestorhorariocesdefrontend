@@ -11,6 +11,7 @@
  * - Horarios: Crear, Ver detalle al hacer clic en el calendario
  */
 import { useState, useEffect } from 'react';
+import Select from 'react-select';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
 import CalendarioAdmin from '../components/calendario/CalendarioAdmin';
 import ProfesorItem from '../components/ui/ProfesorItem';
@@ -494,6 +495,46 @@ const AdminPage = () => {
     }
   };
 
+  /**
+   * Cambia el estado activo/inactivo de un profesor
+   */
+  const handleToggleActivoProfesor = async (profesor) => {
+    const nuevoEstado = profesor.activo === false ? true : false;
+    const accionTxt = nuevoEstado ? 'habilitar' : 'inhabilitar';
+    
+    const confirmado = await alertConfirmar(
+      `¿${nuevoEstado ? 'Habilitar' : 'Inhabilitar'} a ${profesor.nombre}?`,
+      nuevoEstado ? 'El profesor volverá a estar disponible para asignaciones.' : 'El profesor ya no aparecerá disponible para asignar nuevos horarios.',
+      `Sí, ${accionTxt}`
+    );
+
+    if (!confirmado) return;
+
+    setCargando(true);
+    try {
+      const payload = {
+        id: profesor.id,
+        identificacionPersona: profesor.id,
+        nombrePersona: profesor.nombrePersona || profesor.nombre,
+        correoPersona: profesor.correoPersona || profesor.correo,
+        activo: nuevoEstado,
+        tipoPersona: profesor.tipoPersona || { idRol: 2 }
+      };
+      
+      await updateProfesor(profesor.id, payload);
+      
+      setProfesores(prev => ordenarProfesores(prev.map(p => 
+        p.id === profesor.id ? { ...p, activo: nuevoEstado } : p
+      )));
+      
+      await alertExito('¡Estado actualizado!', `El profesor ha sido ${nuevoEstado ? 'habilitado' : 'inhabilitado'}.`);
+    } catch (error) {
+      await alertError('Error', `No se pudo ${accionTxt} el profesor.`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   // --- Abre modales ---
   const abrirVerInfo = (profesor) => {
     setProfesorSeleccionado(profesor);
@@ -577,19 +618,57 @@ const AdminPage = () => {
               </label>
               <div className="relative">
                 <i className="bi bi-person absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-                <select
+                <Select
                   name="profesor"
-                  value={formHorario.profesor}
-                  onChange={handleChangeHorario}
-                  onBlur={handleBlurHorario}
-                  className="input-cesde pl-9 w-full"
-                  disabled={cargandoForm}
-                >
-                  <option value="" disabled>Seleccione un profesor</option>
-                  {profesores.map(p => (
-                    <option key={p.id} value={p.id}>{p.nombre}</option>
-                  ))}
-                </select>
+                  value={
+                    profesores
+                      .filter(p => p.activo !== false)
+                      .map(p => ({ value: p.id, label: p.nombre }))
+                      .find(op => String(op.value) === String(formHorario.profesor)) || null
+                  }
+                  onChange={(selectedOption) => {
+                    handleChangeHorario({
+                      target: { name: 'profesor', value: selectedOption ? String(selectedOption.value) : '' }
+                    });
+                  }}
+                  onBlur={() => {
+                    handleBlurHorario({ target: { name: 'profesor' } });
+                  }}
+                  options={profesores.filter(p => p.activo !== false).map(p => ({ value: p.id, label: p.nombre }))}
+                  placeholder="Seleccione un profesor"
+                  isClearable
+                  isDisabled={cargandoForm}
+                  className="react-select-container text-sm w-full"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      minHeight: '38px',
+                      paddingLeft: '28px', // Para dejar espacio al ícono
+                      borderColor: state.isFocused ? '#E91E75' : '#D1D5DB',
+                      boxShadow: state.isFocused ? '0 0 0 2px rgba(233, 30, 117, 0.2)' : 'none',
+                      '&:hover': {
+                        borderColor: state.isFocused ? '#E91E75' : '#D1D5DB'
+                      },
+                      borderRadius: '0.375rem',
+                      fontFamily: 'Montserrat, sans-serif'
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      paddingLeft: '0',
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected ? '#E91E75' : state.isFocused ? '#fce4ec' : 'white',
+                      color: state.isSelected ? 'white' : '#11182B',
+                      cursor: 'pointer',
+                      '&:active': {
+                        backgroundColor: '#E91E75',
+                        color: 'white'
+                      }
+                    })
+                  }}
+                />
               </div>
               {erroresHorario.profesor && <p className="text-red-500 text-xs mt-1">{erroresHorario.profesor}</p>}
             </div>
@@ -861,6 +940,7 @@ const AdminPage = () => {
                   onVerInfo={abrirVerInfo}
                   onModificar={abrirModificar}
                   onEliminar={handleEliminarProfesor}
+                  onToggleActivo={handleToggleActivoProfesor}
                 />
               ))
             )}

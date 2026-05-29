@@ -52,7 +52,7 @@ const ModalMateria = ({ abierto, onCerrar, onMateriaCreada }) => {
       const nombreLimpio = form.nombremateria.trim().toLowerCase();
       const existe = materias.find(m => 
         m.nombremateria.toLowerCase() === nombreLimpio && 
-        (!modoEdicion || m.idmateria !== form.idmateria)
+        (!modoEdicion || String(m.idmateria) !== String(form.idmateria))
       );
       if (existe) {
         nuevosErrores.nombremateria = 'Esta materia ya está registrada';
@@ -69,6 +69,7 @@ const ModalMateria = ({ abierto, onCerrar, onMateriaCreada }) => {
     setCargando(true);
     try {
       const dataAEnviar = {
+        idmateria: modoEdicion ? form.idmateria : null,
         nombremateria: form.nombremateria.trim(),
         activo: form.activo,
       };

@@ -119,6 +119,7 @@ const ModalHorarioProfesor = ({ abierto, diaInfo, eventoAEditar, horarios, onCer
         if (hayCruce) {
           nuevosErrores.horaInicio = 'Se cruza con otra clase';
           nuevosErrores.horaFin = 'Revisa tu horario';
+          alertError('Cruce de Horarios', 'El horario que intentas registrar se cruza con otra clase existente. Por favor, verifica las horas.');
         }
       }
     }
@@ -327,6 +328,7 @@ const ProfesorPage = () => {
       horaFin:   h.horaFin,
       dia:       h.fecha ? new Date(h.fecha + 'T00:00:00').getDate() : '',
       mes:       h.fecha ? new Date(h.fecha + 'T00:00:00').toLocaleString('es-CO', { month: 'long' }) : '',
+      isPropio:  h.isPropio,
     }));
 
   // Abre el modal en modo CREAR (desde clic en día del calendario)

@@ -17,7 +17,7 @@ const EventoItem = ({ evento }) => {
       </div>
 
       {/* Fecha */}
-      <div className="bg-primary text-white rounded-lg w-12 h-12 flex flex-col items-center justify-center flex-shrink-0 text-center leading-tight">
+      <div className={`${evento.isPropio ? 'bg-purple-500' : 'bg-primary'} text-white rounded-lg w-12 h-12 flex flex-col items-center justify-center flex-shrink-0 text-center leading-tight`}>
         <span className="text-lg font-bold leading-none">{evento.dia}</span>
         <span className="text-xs">{evento.mes}</span>
       </div>

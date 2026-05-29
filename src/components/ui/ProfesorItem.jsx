@@ -7,10 +7,11 @@
  * @param {Function} props.onVerInfo - Callback para ver información
  * @param {Function} props.onModificar - Callback para modificar
  * @param {Function} props.onEliminar - Callback para eliminar
+ * @param {Function} props.onToggleActivo - Callback para inhabilitar/habilitar
  */
 import { useState } from 'react';
 
-const ProfesorItem = ({ profesor, onVerInfo, onModificar, onEliminar }) => {
+const ProfesorItem = ({ profesor, onVerInfo, onModificar, onEliminar, onToggleActivo }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [dropUp, setDropUp] = useState(false);
 
@@ -25,9 +26,16 @@ const ProfesorItem = ({ profesor, onVerInfo, onModificar, onEliminar }) => {
   };
 
   return (
-    <div className="prof-item">
+    <div className={`prof-item ${profesor.activo === false ? 'opacity-70 bg-gray-50' : ''}`}>
       {/* Nombre del profesor */}
-      <span className="text-sm text-cesde-dark truncate mr-2">{profesor.nombre}</span>
+      <span className={`text-sm truncate mr-2 flex items-center gap-2 ${profesor.activo === false ? 'text-gray-500 line-through' : 'text-cesde-dark'}`}>
+        {profesor.nombre}
+        {profesor.activo === false && (
+          <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded-full font-semibold no-underline leading-none">
+            Inactivo
+          </span>
+        )}
+      </span>
 
       {/* Menú de 3 puntos */}
       <div className="relative flex-shrink-0">
@@ -62,6 +70,15 @@ const ProfesorItem = ({ profesor, onVerInfo, onModificar, onEliminar }) => {
                 <i className="bi bi-pencil mr-2 text-primary" />
                 Modificar
               </button>
+              {onToggleActivo && (
+                <button
+                  onClick={() => { setMenuAbierto(false); onToggleActivo(profesor); }}
+                  className="block w-full text-left px-3 py-2 text-cesde-dark bg-transparent border-none cursor-pointer hover:bg-cesde-gray transition-colors border-b border-gray-100"
+                >
+                  <i className={`bi ${profesor.activo === false ? 'bi-check-circle text-green-500' : 'bi-slash-circle text-yellow-600'} mr-2`} />
+                  {profesor.activo === false ? 'Habilitar' : 'Inhabilitar'}
+                </button>
+              )}
               <button
                 onClick={() => { setMenuAbierto(false); onEliminar(profesor); }}
                 className="block w-full text-left px-3 py-2 text-red-500 bg-transparent border-none cursor-pointer hover:bg-red-50 transition-colors"

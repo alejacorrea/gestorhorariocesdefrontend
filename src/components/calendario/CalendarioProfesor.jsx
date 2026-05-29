@@ -252,7 +252,7 @@ const CalendarioProfesor = ({ horarios = [], onClickDia, onEditarEvento, onElimi
         handleEventoMouseEnter(ev);
       }}
     >
-      <span className="cal-evento block truncate cursor-pointer">
+      <span className={`cal-evento block truncate cursor-pointer ${ev.isPropio ? '!bg-purple-500 hover:!bg-purple-600' : ''}`}>
         {ev.clase || ev.materia}
       </span>
       {tooltipEvento?.id === ev.id && (
@@ -345,7 +345,7 @@ const CalendarioProfesor = ({ horarios = [], onClickDia, onEditarEvento, onElimi
                   <span className="text-[10px] text-gray-300 mt-1 text-center">—</span>
                 ) : (
                   eventos.map((ev, ei) => (
-                    <span key={`sem-${i}-ev-${ev.id}-${ei}`} className="cal-evento block text-[11px]">
+                    <span key={`sem-${i}-ev-${ev.id}-${ei}`} className={`cal-evento block text-[11px] ${ev.isPropio ? '!bg-purple-500 hover:!bg-purple-600' : ''}`}>
                       <span className="font-semibold block truncate">{ev.clase || ev.materia}</span>
                       {ev.horaInicio && (
                         <span className="text-[10px] opacity-80">{ev.horaInicio} – {ev.horaFin}</span>
@@ -385,7 +385,7 @@ const CalendarioProfesor = ({ horarios = [], onClickDia, onEditarEvento, onElimi
                   </td>
                   <td className="py-1 pl-2 align-top">
                     {evs.map((ev, ei) => (
-                      <span key={`dia-${hora}-ev-${ev.id}-${ei}`} className="cal-evento block mb-1">
+                      <span key={`dia-${hora}-ev-${ev.id}-${ei}`} className={`cal-evento block mb-1 ${ev.isPropio ? '!bg-purple-500 hover:!bg-purple-600' : ''}`}>
                         <span className="font-semibold block">{ev.clase || ev.materia}</span>
                         <span className="text-[10px] opacity-80">
                           {ev.horaInicio} – {ev.horaFin}

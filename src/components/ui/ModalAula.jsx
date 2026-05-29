@@ -59,7 +59,7 @@ const ModalAula = ({ abierto, onCerrar, onAulaCreada }) => {
       const nombreLimpio = form.numerodeaula.trim().toLowerCase();
       const existe = aulas.find(a => 
         a.numerodeaula.toLowerCase() === nombreLimpio && 
-        (!modoEdicion || a.idaula !== form.idaula)
+        (!modoEdicion || String(a.idaula) !== String(form.idaula))
       );
       if (existe) {
         nuevosErrores.numerodeaula = 'Este aula ya está registrada';
@@ -88,6 +88,7 @@ const ModalAula = ({ abierto, onCerrar, onAulaCreada }) => {
     setCargando(true);
     try {
       const dataAEnviar = {
+        idaula: modoEdicion ? form.idaula : null,
         numerodeaula: form.numerodeaula.trim(),
         capacidadaula: Number(form.capacidadaula),
         sede: { idsede: Number(form.id_sede) },
